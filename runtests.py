@@ -40,10 +40,15 @@ if args.coverage:
 else:
     cov = None
 
+import django
 from django.conf import settings
 from tests import settings as test_settings
 
 settings.configure(test_settings, debug=True)
+
+# Django 1.7+
+if hasattr(django, 'setup'):
+    django.setup()
 
 from django.test.utils import get_runner
 
@@ -51,7 +56,7 @@ TestRunner = get_runner(settings)
 
 runner = TestRunner(verbosity=1, interactive=args.interactive, failfast=args.failfast)
 
-failures = runner.run_tests(["tests", ])
+failures = runner.run_tests(["tests.tests", ])
 
 if cov:
     cov.stop()
