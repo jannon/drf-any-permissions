@@ -120,6 +120,19 @@ class PermissionsTest(TestCase):
 
         self.assertTrue(view.test_permission(request))
 
+    def test_chained_first_list_failed(self):
+        class DefaultApiView(TestView):
+            permission_classes = [AnyPermissions]
+            any_permission_classes = [
+                [FalsePermission, TruePermission],
+                TruePermission,
+            ]
+
+        view = DefaultApiView()
+        request = self.requests.get("/")
+
+        self.assertTrue(view.test_permission(request))
+
     def test_chained_first_failed(self):
         class DefaultApiView(TestView):
             permission_classes = [AnyPermissions]
